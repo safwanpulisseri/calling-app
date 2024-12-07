@@ -1,4 +1,4 @@
-import 'package:calling_app/screens/home_page.dart';
+import 'package:calling_app/screens/index_page.dart';
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 
@@ -18,9 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Calling App',
       theme:AppTheme.theme,
-      home: HomePage(
-          
-      ),
+      home: const IndexPage(),
     );
   }
 }

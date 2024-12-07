@@ -1,6 +1,6 @@
 final class AppPngPath {
   AppPngPath._();
 
- // static const gLogo = "assets/png/g_logo.png";
+  static const callIcon = "assets/png/video_call_icon.png";
   }
 

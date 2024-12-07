@@ -6,5 +6,7 @@ final class AppColor {
   static const Color primary = Color(0xFF55C46F);
   static const Color secondary = Colors.black;
   static const Color toneOne = Color(0xFFF1F1F1);
+  static const Color toneTwo = Colors.blue;
+  static const Color toneThree = Colors.red;
   static const Color transparent = Colors.transparent;
 }

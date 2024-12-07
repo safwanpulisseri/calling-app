@@ -9,80 +9,80 @@ class AppTheme {
     scaffoldBackgroundColor: AppColor.background,
     textTheme:  TextTheme(
       displayLarge:  GoogleFonts.inter(
-                       textStyle: const TextStyle(
-                       color: AppColor.background,
-                       fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                       ),
-                      ),
+      textStyle: const TextStyle(
+      color: AppColor.background,
+      fontSize: 20,
+      fontWeight: FontWeight.w800,
+           ),
+         ),
       displayMedium:GoogleFonts.nunito(
-                       textStyle: const TextStyle(
-                       color: AppColor.background,
-                       fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                       ),
-                      ),
-      displaySmall: TextStyle(
+      textStyle: const TextStyle(
+      color: AppColor.background,
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+            ),
+        ),
+      displaySmall: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w800,
         fontSize: 23,
       ),
-      headlineLarge: TextStyle(
+      headlineLarge: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w600,
         fontSize: 22,
       ),
-      headlineMedium: TextStyle(
+      headlineMedium: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w600,
         fontSize: 20,
       ),
-      headlineSmall: TextStyle(
+      headlineSmall: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w600,
         fontSize: 19,
       ),
-      titleLarge: TextStyle(
+      titleLarge: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w600,
         fontSize: 18,
       ),
-      titleMedium: TextStyle(
+      titleMedium: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w600,
         fontSize: 17,
       ),
-      titleSmall: TextStyle(
+      titleSmall: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w600,
         fontSize: 16,
       ),
-      labelLarge: TextStyle(
+      labelLarge: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w600,
         fontSize: 15,
       ),
-      labelMedium: TextStyle(
+      labelMedium: const TextStyle(
         color: AppColor.secondary,
         fontSize: 16,
         fontWeight: FontWeight.w400,
       ),
-      labelSmall: TextStyle(
+      labelSmall: const TextStyle(
         color: AppColor.secondary,
         fontSize: 13,
         fontWeight: FontWeight.w600,
       ),
-      bodyLarge: TextStyle(
+      bodyLarge: const TextStyle(
         color: AppColor.secondary,
         fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
-      bodyMedium: TextStyle(
+      bodyMedium: const TextStyle(
         color: AppColor.secondary,
         fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
-      bodySmall: TextStyle(
+      bodySmall: const TextStyle(
         color: AppColor.secondary,
         fontWeight: FontWeight.w600,
         fontSize: 13,
@@ -95,7 +95,7 @@ class AppTheme {
     appBarTheme: const AppBarTheme(backgroundColor: AppColor.background),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        minimumSize: Size(double.infinity, 50),
+        minimumSize: const Size(double.infinity, 50),
         backgroundColor: AppColor.primary,
         foregroundColor: AppColor.background,
         shape: RoundedRectangleBorder(
