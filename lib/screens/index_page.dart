@@ -5,28 +5,20 @@ import 'package:calling_app/core/util/png_assets.dart';
 import 'package:calling_app/core/widget/const_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../controllers/index_provider.dart';
 import 'call_page.dart';
 
-class IndexPage extends StatefulWidget {
+
+class IndexPage extends ConsumerWidget {
   const IndexPage({super.key});
 
   @override
-  State<IndexPage> createState() => _IndexPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final channelController = TextEditingController();
+    final validateError = ref.watch(validateErrorProvider);
+    final role = ref.watch(roleProvider);
 
-class _IndexPageState extends State<IndexPage> {
-  final _channelController = TextEditingController();
-  bool _validateError = false;
-  ClientRoleType _role = ClientRoleType.clientRoleBroadcaster;
-
-  @override
-  void dispose() {
-    _channelController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.primary,
@@ -42,9 +34,9 @@ class _IndexPageState extends State<IndexPage> {
               Image.asset(AppPngPath.callIcon),
               kHeight20,
               TextField(
-                controller: _channelController,
+                controller: channelController,
                 decoration: InputDecoration(
-                  errorText: _validateError ? 'Channel Name is Mandatory' : null,
+                  errorText: validateError ? 'Channel Name is Mandatory' : null,
                   border: const UnderlineInputBorder(),
                   hintText: 'Channel Name',
                 ),
@@ -52,27 +44,25 @@ class _IndexPageState extends State<IndexPage> {
               RadioListTile(
                 title: const Text('Broadcaster'),
                 value: ClientRoleType.clientRoleBroadcaster,
-                groupValue: _role,
+                groupValue: role,
                 onChanged: (ClientRoleType? value) {
-                  setState(() {
-                    _role = value!;
+                  if (value != null) {
+                    ref.read(roleProvider.notifier).state = value;
                   }
-                 );
                 },
               ),
               RadioListTile(
                 title: const Text('Audience'),
                 value: ClientRoleType.clientRoleAudience,
-                groupValue: _role,
+                groupValue: role,
                 onChanged: (ClientRoleType? value) {
-                  setState(() {
-                    _role = value!;
+                  if (value != null) {
+                    ref.read(roleProvider.notifier).state = value;
                   }
-                 );
                 },
               ),
               ElevatedButton(
-                onPressed: onJoin,
+                onPressed: () => onJoin(ref, channelController),
                 child: const Text('Join'),
               ),
             ],
@@ -82,21 +72,19 @@ class _IndexPageState extends State<IndexPage> {
     );
   }
 
-  Future<void> onJoin() async {
-    setState(() {
-      _validateError = _channelController.text.isEmpty;
-    });
+  Future<void> onJoin(WidgetRef ref, TextEditingController channelController) async {
+    ref.read(validateErrorProvider.notifier).state = channelController.text.isEmpty;
 
-    if (!_validateError) {
+    if (!ref.read(validateErrorProvider)) {
       await handleCameraAndMic(Permission.camera);
       await handleCameraAndMic(Permission.microphone);
 
       await Navigator.push(
-        context,
+        ref.context,
         MaterialPageRoute(
           builder: (context) => CallPage(
-            role: _role,
-            channelName: _channelController.text,
+            role: ref.read(roleProvider),
+            channelName: channelController.text,
           ),
         ),
       );
