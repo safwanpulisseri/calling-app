@@ -1,19 +1,24 @@
 import 'dart:async';
-import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:calling_app/core/theme/color/app_colors.dart';
 import 'package:flutter/material.dart';
 import '../core/util/agora_url.dart';
-import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
-import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
+// import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
+// import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 
 
  
 
-class CallPage extends StatefulWidget {
-  final String? channelName;
-  final ClientRole? role;
 
-  const CallPage({super.key, this.channelName, required this.role});
+class CallPage extends StatefulWidget {
+  final String channelName;
+  final ClientRoleType role;
+
+  const CallPage({
+    super.key,
+    required this.channelName,
+    required this.role,
+  });
 
   @override
   State<CallPage> createState() => _CallPageState();
@@ -36,106 +41,93 @@ class _CallPageState extends State<CallPage> {
   void dispose() {
     _users.clear();
     _engine.leaveChannel();
-    _engine.destroy();
+    _engine.release();
     super.dispose();
   }
 
   Future<void> initialize() async {
-    if (appId.isEmpty) {
-      setState(() {
-        _infoString.add('APP ID IS MISSING, PLEASE ADD APP ID IN settings.dart');
-        _infoString.add('Agora Engine is Not Starting');
-      });
-      return;
-    }
+    _engine = createAgoraRtcEngine();
+    await _engine.initialize(const RtcEngineContext(appId: appId));
 
-    _engine = await RtcEngine.create(appId);
-
-    await _engine.enableVideo();
-    await _engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
-    await _engine.setClientRole(widget.role!);
+    await _engine.setChannelProfile(ChannelProfileType.channelProfileLiveBroadcasting);
+    await _engine.setClientRole(role: widget.role);
 
     _addAgoraEventHandlers();
 
-    VideoEncoderConfiguration configuration =  VideoEncoderConfiguration();
-    configuration.dimensions = const VideoDimensions(width: 1920,height: 1080);
-    await _engine.setVideoEncoderConfiguration(configuration);
+    const config = VideoEncoderConfiguration(dimensions: VideoDimensions(width: 1920, height: 1080));
+    await _engine.setVideoEncoderConfiguration(config);
+
+    await _engine.enableVideo();
 
     await _engine.joinChannel(
-       token,
-       widget.channelName!,
-      null,
-      0,
+      token: token,
+      channelId: widget.channelName,
+      uid: 0,
+      options: const ChannelMediaOptions(),
     );
   }
 
   void _addAgoraEventHandlers() {
-    _engine.setEventHandler(
-      RtcEngineEventHandler(
-      error: (code) {
-        setState(() {
-          final info = 'Error: $code';
-          _infoString.add(info);
-        });
-      },
-     joinChannelSuccess: (channel, uid, elapsed) {
+    _engine.registerEventHandler(RtcEngineEventHandler(
+     onError: (ErrorCodeType code, String description) {
   setState(() {
-    final info = 'JoinChannel: $channel, uid: $uid';
-    _infoString.add(info);
+    _infoString.add('Error: $code, Description: $description');
   });
 },
 
-      leaveChannel: (stats) {
+      onJoinChannelSuccess: (connection, elapsed) {
         setState(() {
-          _infoString.add('Leave Channel');
-          _users.clear();
+          _infoString.add('JoinChannel: ${connection.channelId}, uid: ${connection.localUid}');
         });
       },
-      userJoined: (uid, elapsed) {
+      onUserJoined: (connection, uid, elapsed) {
         setState(() {
-          final info = 'User Joined: $uid';
-          _infoString.add(info);
+          _infoString.add('User Joined: $uid');
           _users.add(uid);
         });
       },
-      userOffline: (uid, reason) {
+      onUserOffline: (connection, uid, reason) {
         setState(() {
-          final info = ' User Offilne $uid';
-          _infoString.add(info);
+          _infoString.add('User Offline: $uid');
           _users.remove(uid);
         });
       },
-      firstRemoteVideoFrame: (uid, width, height, elapsed) {
-        final info = 'First Remote Video : $uid ${width}x $height';
-        _infoString.add(info);
-      },
     ));
   }
- Widget _viewRows() {
+
+Widget _viewRows() {
   final List<Widget> list = [];
-  if (widget.role == ClientRole.Broadcaster) {
-    list.add(const rtc_local_view.SurfaceView());
+  if (widget.role == ClientRoleType.clientRoleBroadcaster) {
+    list.add(AgoraVideoView(
+      controller: VideoViewController(
+        rtcEngine: _engine,
+        canvas: const VideoCanvas(uid: 0),
+      ),
+    ));
   }
   for (var uid in _users) {
-    list.add(rtc_remote_view.SurfaceView(
-      uid: uid,
-      channelId: widget.channelName!,
+    list.add(AgoraVideoView(
+      controller: VideoViewController.remote(
+        rtcEngine: _engine,
+        canvas: VideoCanvas(uid: uid),
+        connection: RtcConnection(channelId: widget.channelName),
+      ),
     ));
   }
-  final view = list;
   return Column(
     children: List.generate(
-      view.length,
+      list.length,
       (index) => Expanded(
-        child: view[index],
-        ),
+        child: list[index],
+      ),
     ),
   );
 }
 
 
+
   Widget _toolbar(){
-    if(widget.role == ClientRole.Audience) return const SizedBox();
+    if(widget.role == ClientRoleType.clientRoleAudience) return const SizedBox();
     return Container(
       alignment: Alignment.bottomCenter,
       padding: const EdgeInsets.symmetric(vertical: 48),
