@@ -56,7 +56,8 @@ class _IndexPageState extends State<IndexPage> {
                 onChanged: (ClientRoleType? value) {
                   setState(() {
                     _role = value!;
-                  });
+                  }
+                 );
                 },
               ),
               RadioListTile(
@@ -66,7 +67,8 @@ class _IndexPageState extends State<IndexPage> {
                 onChanged: (ClientRoleType? value) {
                   setState(() {
                     _role = value!;
-                  });
+                  }
+                 );
                 },
               ),
               ElevatedButton(

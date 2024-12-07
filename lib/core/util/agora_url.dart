@@ -1,2 +1,4 @@
-const appId = '5ba4d7ec381d43b4a68c395d4515dbdc';
-const token = '007eJxTYNhyPF7zWtaFK04XmKbtMRJmE26VXLaiP9nu8vaLnS3XJQUVGEyTEk1SzFOTjS0MU0yMk0wSzSySjS1NU0xMDU1TklKSD7cGpTcEMjJcVbNjZGSAQBCfk6GgNCezuDi1KJOBAQDmnSFc';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+final appId  = dotenv.env['APP_ID']!;
+final token = dotenv.env['TOKEN_ID']!;

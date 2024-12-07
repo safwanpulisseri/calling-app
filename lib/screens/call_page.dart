@@ -3,11 +3,6 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:calling_app/core/theme/color/app_colors.dart';
 import 'package:flutter/material.dart';
 import '../core/util/agora_url.dart';
-// import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
-// import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
-
-
- 
 
 
 class CallPage extends StatefulWidget {
@@ -47,7 +42,7 @@ class _CallPageState extends State<CallPage> {
 
   Future<void> initialize() async {
     _engine = createAgoraRtcEngine();
-    await _engine.initialize(const RtcEngineContext(appId: appId));
+    await _engine.initialize(RtcEngineContext(appId: appId));
 
     await _engine.setChannelProfile(ChannelProfileType.channelProfileLiveBroadcasting);
     await _engine.setClientRole(role: widget.role);
@@ -67,13 +62,13 @@ class _CallPageState extends State<CallPage> {
     );
   }
 
-  void _addAgoraEventHandlers() {
+  void _addAgoraEventHandlers(){
     _engine.registerEventHandler(RtcEngineEventHandler(
      onError: (ErrorCodeType code, String description) {
-  setState(() {
-    _infoString.add('Error: $code, Description: $description');
-  });
-},
+        setState(() {
+        _infoString.add('Error: $code, Description: $description');
+         });
+        },
 
       onJoinChannelSuccess: (connection, elapsed) {
         setState(() {
@@ -92,7 +87,8 @@ class _CallPageState extends State<CallPage> {
           _users.remove(uid);
         });
       },
-    ));
+     )
+   );
   }
 
 Widget _viewRows() {
@@ -143,7 +139,7 @@ Widget _viewRows() {
        },
        shape: const CircleBorder(),
        elevation: 2,
-       fillColor: muted?AppColor.toneTwo:AppColor.background,
+       fillColor: muted?AppColor.toneFour:AppColor.background,
        padding: const EdgeInsets.all(20),
        child: Icon(muted?Icons.mic_off:Icons.mic,
        color: AppColor.toneTwo,
@@ -221,16 +217,17 @@ Widget _viewRows() {
 
                           ),
                         ),
-                      ))
-                    ],),
-                    );
+                      )
+                    )
+                   ],
+                  ),
+                 );
                },
              ),
           ),
-
         ),
       )
-      );
+    );
   }
 
   @override
@@ -243,11 +240,11 @@ Widget _viewRows() {
           IconButton(onPressed: (){
         setState(() {
           viewPanel =!viewPanel;
-        });
+              });
           }, icon: const Icon(
             Icons.info_outline,
-
-          ))
+           )
+          )
         ],
       ),
       backgroundColor: AppColor.secondary,
@@ -260,7 +257,6 @@ Widget _viewRows() {
           ],
         ),
       ),
-
     );
   }
 }
